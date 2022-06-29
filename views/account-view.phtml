@@ -1,0 +1,114 @@
+<main>
+    <div class="account__welcome">
+        <h4>Bonjour <?= $userFirstName ?> !</h4>
+        <p>Modifiez en toute liberté vos informations de contact, ainsi que votre votre adresse de livraison.</p>
+        <p class="alert__displayer"><i class="fa-solid fa-triangle-exclamation"></i> Votre nom, votre prénom et votre adresse mail ne sont pas modifiables. <i class="fa-solid fa-triangle-exclamation"></i></p>
+    </div>
+
+    <?php if (!empty($errors)) : ?>
+        <div class="alert__displayer">
+            <p>Les erreurs suivantes ont été détectées : </p>
+            <ul>
+                <?php foreach ($errors as $error) : ?>
+                    <li><?= $error; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($passSuccess) : ?>
+        <div class="success">
+            <p>Votre mot de passe a bien été mis à jour !</p>
+        </div>
+    <?php endif; ?>
+
+
+    <?php if ($addressSuccess) : ?>
+        <div class="success">
+            <p>Votre adresse a bien été mise à jour !</p>
+        </div>
+    <?php endif; ?>
+
+    <section class="bg--alt user__infos">
+        <h1>Mes informations</h1>
+        <a title="Mes informations personnelles" id="accountInfo" href="#">
+            <p><i class="fa-solid fa-circle-right"></i> Mes informations personnelles</p>
+        </a>
+        <section id="accountDetails" class="form--display">
+            <form class="form" method="POST">
+                <div>
+                    <label class="form__label" for="name"><i class="fa-solid fa-circle-right"></i> Nom</label>
+                    <input class="form__input" type="text" name="name" id="name" value="<?= $userName ?>" readonly>
+                </div>
+                <div>
+                    <label class="form__label" for="firstname"><i class="fa-solid fa-circle-right"></i> Prénom</label>
+                    <input class="form__input" type="text" name="firstname" id="firstname" value="<?= $userFirstName ?>" readonly>
+                </div>
+                <div>
+                    <label class="form__label" for="email"><i class="fa-solid fa-at"></i> Email</label>
+                    <input class="form__input" type="email" name="email" id="email" value="<?= $userEmail ?>" readonly>
+                </div>
+                <h4>Informations complémentaires (modifiables)</h4>
+                <div>
+                    <label class="form__label" for="email"><i class="fa-solid fa-key"></i> Mot de passe actuel (à renseigner en cas de changement de mot de passe)</label>
+                    <input class="form__input" type="password" name="actualPassword" id="actualPassword">
+                </div>
+                <div>
+                    <label class="form__label" for="email">Nouveau mot de passe</label>
+                    <input class="form__input" type="password" name="password" id="password">
+                </div>
+                <div>
+                    <label class="form__label" for="tel"><i class="fa-solid fa-phone"></i> Numéro de téléphone</label>
+                    <input class="form__input" type="tel" name="tel" id="tel" value="<?= $userPhone ?>">
+                </div>
+                <div>
+                    <label class="form__label" for="birth"><i class="fa-solid fa-cake-candles"></i> Date de naissance</label>
+                    <input class="form__input" type="date" name="birth" id="birth" value="<?= $userBirth ?>">
+                </div>
+                <button class="btn" type="submit">Mettre à jour les informations</button>
+            </form>
+        </section>
+        <a title="Mon adresse" id="accountAddress" href="#">
+            <p><i class="fa-solid fa-circle-right"></i> Mon adresse</p>
+        </a>
+        <section id="accountAddressDetails" class="form--display">
+            <form class="form" method="POST">
+                <div>
+                    <label class="form__label" for="address">Adresse</label>
+                    <input class="form__input" type="text" name="address" id="address" value="<?= $userAddress ?>">
+                </div>
+                <div>
+                    <label class="form__label" for="cp">Code postal</label>
+                    <input class="form__input" type="text" name="cp" id="cp" value="<?= $userCP ?>">
+                </div>
+                <div>
+                    <label class="form__label" for="city">Ville</label>
+                    <input class="form__input" type="text" name="city" id="city" value="<?= $userCity ?>">
+                </div>
+                <button class="btn" type="submit">Mettre à jour les informations</button>
+            </form>
+        </section>
+    </section>
+    <section class="bg--alt user__infos">
+        <h1>Mes commandes</h1>
+        <p><i class="fa-solid fa-circle-right"></i> Commandes passées</p>
+        <p><i class="fa-solid fa-circle-right"></i> Ma liste d'envies</p>
+        <?php foreach ($favProduct as $fav) : ?>
+            <article class="cart__product" value="<?= $fav['id'] ?>">
+                <img class="cart__product__img" src="<?= $fav['image1'] ?>" alt="Nom du produit">
+                <div class="cart__product__details">
+                    <h4><?= $fav['name'] ?></h4>
+                    <p><strong>Taille</strong> : <?= $fav['size'] ?>
+                    <p><strong>Prix</strong> : <?= $fav['price'] ?> €</p>
+                </div>
+                <div class="cart__product__btn">
+                    <form action="" method="post">
+                        <input type="hidden" name="confirmer" value="<?= $fav['id'] ?>">
+                        <button class="btn--delete" type="submit"><i class="fa-solid fa-trash-can"></i></button>
+                    </form>
+                    <a title="Ajouter au panier" href="./index.php?page=Produits&modal=<?= $fav['id'] ?>&addToCart=<?= $fav['id'] ?>"><i class="btn--addToCart fa-solid fa-cart-plus"></i></a>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </section>
+</main>

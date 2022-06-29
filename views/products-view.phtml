@@ -1,0 +1,159 @@
+<main>
+    <div class="main__products">
+        <aside class="products__asideFilter">
+            <section class="products__filterBox">
+                <details class="bg--primary" id="details">
+                    <summary>Filtrer</summary>
+                    <form action="" method="POST">
+                        <div>
+                            <p><strong>Taille</strong></p>
+                            <input type="checkbox" name="XS">
+                            <label for="xs">XS</label>
+                            <input type="checkbox" name="S">
+                            <label for="s">S</label>
+                            <input type="checkbox" name="M">
+                            <label for="m">M</label>
+                            <input type="checkbox" name="L">
+                            <label for="l">L</label>
+                            <input type="checkbox" name="XL">
+                            <label for="xl">XL</label>
+                        </div>
+                        <div>
+                            <p><strong>Pointures</strong></p>
+                            <input type="checkbox" name="36">
+                            <label for="36">36</label>
+                            <input type="checkbox" name="37">
+                            <label for="37">37</label>
+                            <input type="checkbox" name="38">
+                            <label for="38">38</label>
+                            <input type="checkbox" name="39">
+                            <label for="39">39</label>
+                            <input type="checkbox" name="40">
+                            <label for="40">40</label>
+                            <input type="checkbox" name="41">
+                            <label for="41">41</label>
+                            <input type="checkbox" name="42">
+                            <label for="42">42</label>
+                            <input type="checkbox" name="43">
+                            <label for="43">43</label>
+                            <input type="checkbox" name="44">
+                            <label for="44">44</label>
+                        </div>
+                        <div class="products__filter--cat">
+                            <p><strong>Catégories</strong></p>
+                            <div>
+                                <input type="checkbox" name="Accessoires">
+                                <label for="Accessoires">Accessoires</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="Chaussures">
+                                <label for="Chaussures">Chaussures</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="Vetements">
+                                <label for="Vetements">Vêtements</label>
+                            </div>
+                        </div>
+                        <button class="btn" type="submit">Appliquer les filtres</button>
+                        <button class="btn btn--reset" type="submit">Réinitialiser les filtres</button>
+                    </form>
+                </details>
+            </section>
+        </aside>
+        <div class="products__cardsContainer">
+            <section class="products__cardsList">
+                <?php foreach ($productInfos as $productInfo) : ?>
+                    <?php if (empty($filterResult) && !in_array($productInfo['size'], $filterResult)) : ?>
+                        <?php if (!isset($_GET['cat']) || $_GET['cat'] === 'all') : ?>
+                            <div class="product__card">
+                                <img src="<?= $productInfo['image1'] ?>" alt="<?= $productInfo['name'] ?>">
+                                <div class="product__card--description">
+                                    <h3><?= $productInfo['name'] ?></h3>
+                                    <p>Catégorie : <?= $productInfo['type'] ?>
+                                    <p>Taille : <?= $productInfo['size'] ?>
+                                    <p class="product__card--price"><?= $productInfo['price'] ?> €</p>
+                                    <a class="bg--primary menu__link" href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>">Détails</a>
+                                    <a title="Ajouter au panier" href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>&addToCart=<?= $productInfo['id'] ?>"><i class="btn--addToCart fa-solid fa-cart-plus"></i></a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (isset($_GET['cat']) && $productInfo['type'] === $_GET['cat']) : ?>
+                            <div class="product__card">
+                                <img src="<?= $productInfo['image1'] ?>" alt="Nom du produit">
+                                <div class="product__card--description">
+                                    <h3><?= $productInfo['name'] ?></h3>
+                                    <p>Catégorie : <?= $productInfo['type'] ?>
+                                    <p>Taille : <?= $productInfo['size'] ?>
+                                    <p class="product__card--price"><?= $productInfo['price'] ?> €</p>
+                                    <a class="bg--primary menu__link" href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>">Détails</a>
+                                    <a title="Ajouter au panier" href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>&addToCart=<?= $productInfo['id'] ?>"><i class="btn--addToCart fa-solid fa-cart-plus"></i></a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php else : ?>
+                        <?php if (!empty($filterResult) && (in_array($productInfo['size'], $filterResult) || in_array($productInfo['type'], $filterResult))) : ?>
+                            <div class="product__card">
+                                <img src="<?= $productInfo['image1'] ?>" alt="Nom du produit">
+                                <div class="product__card--description">
+                                    <h3><?= $productInfo['name'] ?></h3>
+                                    <p>Catégorie : <?= $productInfo['type'] ?>
+                                    <p>Taille : <?= $productInfo['size'] ?>
+                                    <p class="product__card--price"><?= $productInfo['price'] ?> €</p>
+                                    <a class="bg--primary menu__link" href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>">Détails</a>
+                                    <a title="Ajouter au panier" href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>&addToCart=<?= $productInfo['id'] ?>"><i class="btn--addToCart fa-solid fa-cart-plus"></i></a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($_GET['modal']) && $_GET['modal'] === strval($productInfo['id'])) : ?>
+                        <div class="modal__display">
+                            <div id="modal" class="modal" value="<?= $productInfo['id'] ?>">
+                                <?php
+                                if (!empty($errors)) : ?>
+                                    <div class="alert__displayer">
+                                        <p>Les erreurs suivantes ont été détectées : </p>
+                                        <ul>
+                                            <?php foreach ($errors as $error) : ?>
+                                                <li><?= $error; ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php endif; ?>
+                                <a href="./index.php?<?= strip_param_from_url(['modal', 'addToCart']) ?>" class="close">&times;</a>
+                                <h3><?= $productInfo['name'] ?></h3>
+                                <section class="bg--primary modal-swiper swiper mySwiper">
+                                    <div class="swiper mySwiper">
+                                        <div class="swiper-wrapper">
+                                            <div class="swiper-slide">
+                                                <img src="<?= $productInfo['image1'] ?>" alt="Produit">
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img src="<?= $productInfo['image2'] ?>" alt="Produit">
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img src="<?= $productInfo['image3'] ?>" alt="Produit">
+                                            </div>
+                                        </div>
+                                        <div class="swiper-button-next"></div>
+                                        <div class="swiper-button-prev"></div>
+                                    </div>
+                                </section>
+                                <div class="modal__details">
+                                    <p class="modal__cat"><em>Catégorie : <?= $productInfo['type'] ?></em></p>
+                                    <h4>Description</h4>
+                                    <p><?= $productInfo['description'] ?></p>
+                                    <h4>Prix</h4>
+                                    <p><?= $productInfo['price'] ?> €</p>
+                                </div>
+                                <a class="add-fav" href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>&addToFav=<?= $productInfo['id'] ?>"><i class="fa-solid fa-heart"></i> Ajouter à la liste d'envies</a>
+                                <a href="./index.php?page=Produits&modal=<?= $productInfo['id'] ?>&addToCart=<?= $productInfo['id'] ?>" class="btn btn--connect">Ajouter au panier</a>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </section>
+        </div>
+    </div>
+</main>

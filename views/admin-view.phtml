@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>D'Frip & Vous - Admin</title>
+
+    <!-- Fonts imports -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bad+Script&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Serif&display=swap" rel="stylesheet">
+
+    <!-- CSS imports -->
+    <link rel="stylesheet" href="./vendor/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
+    <!-- JS imports -->
+    <script src="./vendor/js/script.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+</head>
+
+<body>
+    <?php if ($_SESSION['role'] === '1') : ?>
+        <header class="admin-header">
+            <nav class="admin-navbar">
+                <a href="./index.php?page=Admin&room=Users">Utilisateurs</a>
+                <a href="./index.php?page=Admin&room=Products">Produits</a>
+                <a href="./index.php?page=Admin&room=Contact">Contact</a>
+                <a href="./index.php?page=Admin&room=Newsletter">Newsletter</a>
+            </nav>
+        </header>
+        <main>
+
+            <!-- Users page : users list & delete function -->
+
+            <?php if (isset($_GET['room']) && $_GET['room'] === 'Users') : ?>
+                <table class="table">
+                    <thead>
+                        <td>ID</td>
+                        <td>Nom</td>
+                        <td>Prénom</td>
+                        <td>Email</td>
+                        <td>Rôle</td>
+                        <td>Date inscription</td>
+                        <td>Supprimer l'utilisateur</td>
+                    </thead>
+                    <?php foreach ($allUsers as $user) : ?>
+                        <tr class="table-user">
+                            <td><?= $user['id'] ?></td>
+                            <td><?= $user['Name'] ?></td>
+                            <td><?= $user['FirstName'] ?></td>
+                            <td><?= $user['email'] ?></td>
+                            <td><?= $user['name'] ?></td>
+                            <td><?= $user['register_date'] ?></td>
+                            <td>
+                                <form action="./index.php?page=Admin&room=Users" method="post">
+                                    <input type="hidden" name="confirmer-<?= $user['id'] ?>" value="<?= $user['id'] ?>">
+                                    <button type="submit" name="valider">Supprimer</button>
+                                    <?php if (isset($_POST['confirmer-' . $user['id']]) && $_POST['confirmer-' . $user['id']] === $user['id']) : ?>
+                                        <div>
+                                            <p>Etes-vous sûr de vouloir supprimer le compte de <?= $user['FirstName'] ?> <?= $user['Name'] ?> ?</p>
+                                            <form action="" method="POST">
+                                                <input type="hidden" name="confirmer" value="<?= $user['id'] ?>">
+                                                <button type="submit">Oui, je suis sûr !</button>
+                                            </form>
+                                        </div>
+                                    <?php endif; ?>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            <?php endif; ?>
+
+            <!-- Products page : add product cards into the main product page -->
+
+            <?php if (isset($_GET['room']) && $_GET['room'] === 'Products') : ?>
+                <nav class="admin-products-nav">
+                    <a href="./index.php?page=Admin&room=Products&cat=ShowProducts">Afficher tous les produits</a>
+                    <a href="./index.php?page=Admin&room=Products&cat=CreateProduct">Créer un produit</a>
+                    <a href="./index.php?page=Admin&room=Products&cat=EditProduct">Modifier un produit</a>
+                </nav>
+                <?php if (isset($_GET['cat']) && $_GET['cat'] === 'ShowProducts') : ?>
+                    <table class="table">
+                        <thead>
+                            <td>ID</td>
+                            <td>Nom</td>
+                            <td>Prix</td>
+                            <td>Taille</td>
+                            <td>Catégorie</td>
+                        </thead>
+                        <?php foreach ($allProducts as $product) : ?>
+                            <tr class="table-user">
+                                <td><?= $product['id'] ?></td>
+                                <td><?= $product['name'] ?></td>
+                                <td><?= $product['price'] ?></td>
+                                <td><?= $product['size'] ?></td>
+                                <td><?= $product['type'] ?></td>
+                                <td>
+                                    <form action="./index.php?page=Admin&room=Products&cat=ShowProducts" method="post">
+                                        <input type="hidden" name="confirmer-<?= $product['id'] ?>" value="<?= $product['id'] ?>">
+                                        <button type="submit" name="valider">Supprimer</button>
+                                        <?php if (isset($_POST['confirmer-' . $product['id']]) && $_POST['confirmer-' . $product['id']] === $product['id']) : ?>
+                                            <div>
+                                                <p>Etes-vous sûr de vouloir supprimer le produit <?= $product['name'] ?> ?</p>
+                                                <form action="" method="POST">
+                                                    <input type="hidden" name="confirmer" value="<?= $product['id'] ?>">
+                                                    <button type="submit">Oui, je suis sûr !</button>
+                                                </form>
+                                            </div>
+                                        <?php endif; ?>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                <?php endif; ?>
+                <?php if (isset($_GET['cat']) && $_GET['cat'] === 'CreateProduct') : ?>
+                    <div class="admin-insert-img">
+                        <h1>Etape n°1 : Téléchargement des photos produit</h1>
+                        <form class="admin-insert-file" action="#" method="post" enctype="multipart/form-data">
+                            <h2>Insérer une image</h2>
+                            <p>Téléchargez autant de photos que vous le souhaitez : choisissez un fichier, puis chiquez sur "Télécharger l'image"</p>
+                            <p>Répétez cette procédure autant de fois que nécessaire</p>
+                            <input type="file" multiple name=<?= $nameOfInputUpload ?> id="image" required>
+                            <button class="btn" type="submit">Télécharger l'image</button>
+
+                            <section id="affichageImage">
+                                <?php if ($isPost && isset($urlImage)) : ?>
+                                    <img style='max-width:400px;' src=<?= $urlImage ?> alt='une image chargée' />
+                                    <br>
+                                    Lien de votre image : <a href='<?= $urlImage ?>' target='_blank'> cliquez-ici </a>
+                                <?php else : ?>
+                                    <h3 style='text-align:center'> Votre image s'affichera ici </h3>
+                                <?php endif ?>
+                            </section>
+                        </form>
+                    </div>
+                    <div class="admin-insert-img">
+                        <h1>Etape n°2 : Création de la carte produit</h1>
+                        <form class="bg--primary form admin-create-product" action="#" method="POST">
+                            <label class="form-label" for="category">Catégorie</label>
+                            <select class="form-input" name="category" id="category">
+                                <option value="1">Chaussures</option>
+                                <option value="2">Vêtements</option>
+                                <option value="3">Services</option>
+                                <option value="4">Accessoires</option>
+                            </select>
+                            <label class="form-label" for="name">Nom du produit</label>
+                            <input class="form-input" type="text" name="name" id="name">
+                            <label class="form-label" for="description">Description</label>
+                            <textarea class="form-textarea" type="textarea" name="description" id="description"></textarea>
+                            <label class="form-label" for="price">Prix</label>
+                            <input class="form-input" type="number" name="price" id="price">
+                            <label class="form-label" for="size">Taille</label>
+                            <input class="form-input" type="text" name="size" id="size">
+                            <label class="form-label" for="image1">Image 1</label>
+                            <input class="form-input" type="file" multiple name="image1">
+                            <button class="btn" type=" submit">Créer la fiche produit !</button>
+                        </form>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($_GET['cat']) && $_GET['cat'] === 'EditProduct') : ?>
+                    <div class="admin-cards-container">
+                        <?php foreach ($productInfos as $productInfo) : ?>
+                            <div class="product-card">
+                                <img src="<?= $productInfo['image1'] ?>" alt="<?= $productInfo['name'] ?>">
+                                <div class="product-card-description">
+                                    <h3><?= $productInfo['name'] ?></h3>
+                                    <p>Catégorie : <?= $productInfo['type'] ?>
+                                    <p>Taille : <?= $productInfo['size'] ?>
+                                    <p class="product-card-price"><?= $productInfo['price'] ?> €</p>
+                                    <a class="bg--primary" href="./index.php?page=Admin&room=Products&cat=EditProduct&modal=<?= $productInfo['id'] ?>">Détails</a>
+                                </div>
+                            </div>
+
+                            <?php if (isset($_GET['modal']) && $_GET['modal'] === strval($productInfo['id'])) : ?>
+                                <div class="modal-display">
+                                    <div id="modal" class="modal" value="<?= $productInfo['id'] ?>">
+                                        <a href="./index.php?page=Admin&room=Products&cat=EditProduct" class="close">&times;</a>
+                                        <form action="#" method="post">
+                                            <input type="text" name="name" value="<?= $productInfo['name'] ?>"></input>
+                                            <p class="modal-cat"><em>Catégorie : <?= $productInfo['type'] ?></em></p>
+                                            <h4>Description</h4>
+                                            <textarea type="text" name="" value="<?= $productInfo['description'] ?>"></textarea>
+                                            <h4>Prix</h4>
+                                            <input type="text" value="<?= $productInfo['price'] ?>"></input>
+                                            <button type="submit">Modifier les informations</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?php if (isset($_GET['room']) && $_GET['room'] === 'Contact') : ?>
+                <nav class="bg--primary admin-products-nav">
+                    <a href="./index.php?page=Admin&room=Contact&cat=ShowMessages">Afficher tous les nouveaux messages</a>
+                    <a href="./index.php?page=Admin&room=Contact&cat=ArchiveMessages">Messages archivés</a>
+                </nav>
+                <?php if (isset($_GET['cat']) && $_GET['cat'] === 'ShowMessages') : ?>
+                    <table class="table">
+                        <thead>
+                            <td>Nom</td>
+                            <td>Prénom</td>
+                            <td>Email</td>
+                            <td>Message</td>
+                            <td>Date</td>
+                            <td>Archiver</td>
+                        </thead>
+                        <?php foreach ($allMessages as $message) : ?>
+                            <tr class="table-user">
+                                <td><?= $message['name'] ?></td>
+                                <td><?= $message['firstname'] ?></td>
+                                <td><a href="mailto: <?= $message['email'] ?>"><?= $message['email'] ?></a></td>
+                                <td><?= $message['message'] ?></td>
+                                <td><?= $message['date'] ?></td>
+                                <td>
+                                    <form action="./index.php?page=Admin&room=Contact&cat=ShowMessages" method="POST">
+                                        <input type="hidden" name="confirmer-<?= $message['id'] ?>" value="<?= $message['id'] ?>">
+                                        <button type="submit" name="valider">Archiver</button>
+                                        <?php if (isset($_POST['confirmer-' . $message['id']]) && $_POST['confirmer-' . $message['id']] === $message['id']) : ?>
+                                            <div>
+                                                <p>Etes-vous sûr de vouloir archiver ce message ?</p>
+                                                <form action="" method="POST">
+                                                    <input type="hidden" name="confirmer" value="<?= $message['id'] ?>">
+                                                    <button type="submit">Oui, je suis sûr !</button>
+                                                </form>
+                                            </div>
+                                        <?php endif; ?>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                <?php endif; ?>
+                <?php if (isset($_GET['cat']) && $_GET['cat'] === 'ArchiveMessages') : ?>
+                    <table class="table">
+                        <thead>
+                            <td>Nom</td>
+                            <td>Prénom</td>
+                            <td>Email</td>
+                            <td>Message</td>
+                            <td>Date</td>
+                        </thead>
+                        <?php foreach ($archMessages as $message) : ?>
+                            <tr class="table-user">
+                                <td><?= $message['name'] ?></td>
+                                <td><?= $message['firstname'] ?></td>
+                                <td><a href="mailto: <?= $message['email'] ?>"><?= $message['email'] ?></a></td>
+                                <td><?= $message['message'] ?></td>
+                                <td><?= $message['date'] ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                <?php endif; ?>
+            <?php endif; ?>
+        <?php else : ?>
+            <p class="alert__displayer">Accès interdit</p>
+            <p class="alert__displayer">Redirection dans 3 secondes...</p>
+            <?php header('Refresh: 3;URL=./index.php?page=Accueil');
+            exit() ?>
+        <?php endif; ?>
+        </main>

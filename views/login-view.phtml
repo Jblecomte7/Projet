@@ -1,0 +1,33 @@
+<?php
+$loginForm = new FormContact($formLabel, $type, $className);
+?>
+
+<main>
+    <div class="login__main">
+        <h1 class="title">Se connecter</h1>
+
+        <?php if (!empty($errors)) : ?>
+            <div class="alert__displayer">
+                <p>Les erreurs suivantes ont été détectées : </p>
+                <ul>
+                    <?php foreach ($errors as $error) : ?>
+                        <li><?= $error; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <form class="form" action="" method="POST">
+            <div>
+                <?= $loginForm->input('email', 'email', 'inputClass') ?>
+            </div>
+            <div>
+                <?= $loginForm->input('password', 'password', 'inputClass') ?>
+            </div>
+            <?= $loginForm->submit() ?>
+        </form>
+
+        <h1 class="title">Pas encore inscrit ?</h1>
+        <a title="Se connecter" class="btn btn--connect" href="./index.php?page=Register">S'inscrire</a>
+    </div>
+</main>
